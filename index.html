@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Belajar Matematika</title>
+  <title>Belajar Matematika dengan Cookies</title>
   <style>
     /* CSS Reset dan dasar */
     * {
@@ -147,16 +147,39 @@
     let score = 0;
     let health = 3;
 
-    // Fungsi untuk menyimpan data ke localStorage
-    function saveData() {
-      localStorage.setItem("score", score);
-      localStorage.setItem("health", health);
+    // Fungsi untuk mengatur cookie
+    function setCookie(name, value, days) {
+      let expires = "";
+      if (days) {
+        const date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+      }
+      document.cookie = name + "=" + (value || "") + expires + "; path=/";
     }
 
-    // Fungsi untuk memuat data dari localStorage
+    // Fungsi untuk mendapatkan cookie
+    function getCookie(name) {
+      const nameEQ = name + "=";
+      const ca = document.cookie.split(";");
+      for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) === " ") c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+      }
+      return null;
+    }
+
+    // Simpan data ke cookies
+    function saveData() {
+      setCookie("score", score, 30); // data akan tersimpan selama 30 hari
+      setCookie("health", health, 30);
+    }
+
+    // Muat data dari cookies
     function loadData() {
-      score = parseInt(localStorage.getItem("score")) || 0;
-      health = parseInt(localStorage.getItem("health")) || 3;
+      score = parseInt(getCookie("score")) || 0;
+      health = parseInt(getCookie("health")) || 3;
       updateDisplays();
     }
 
@@ -190,7 +213,6 @@
         questionText = `${num1} + ${num2} = ?`;
         currentAnswer = num1 + num2;
       } else if (op === "kurang") {
-        // Pastikan soal pengurangan tidak menghasilkan angka negatif
         const a = Math.max(num1, num2);
         const b = Math.min(num1, num2);
         questionText = `${a} - ${b} = ?`;
@@ -209,7 +231,6 @@
     function updateDisplays() {
       document.getElementById('score').textContent = score;
       document.getElementById('health').textContent = health;
-      // Simpan data setiap kali tampilan diupdate
       saveData();
     }
 
@@ -222,14 +243,12 @@
         feedbackElem.style.color = "#28a745";
         score++;
         updateDisplays();
-        // Jika jawaban benar, generate soal baru otomatis setelah 1 detik
         setTimeout(generateQuestion, 1000);
       } else {
         health--;
         updateDisplays();
         feedbackElem.textContent = "Salah!";
         feedbackElem.style.color = "#dc3545";
-        // Jika health habis, reset skor dan health
         if (health <= 0) {
           feedbackElem.textContent += " Game Over! Skor direset.";
           score = 0;
@@ -240,7 +259,7 @@
       }
     }
 
-    // Muat data ketika halaman pertama kali di-load
+    // Muat data dari cookies saat halaman pertama kali di-load
     loadData();
   </script>
 </body>
