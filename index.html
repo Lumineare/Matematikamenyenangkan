@@ -77,8 +77,9 @@
       margin-top: 10px;
       transition: color 0.3s;
     }
-    .score {
-      text-align: center;
+    .status {
+      display: flex;
+      justify-content: space-between;
       margin-top: 15px;
       font-size: 1.2em;
     }
@@ -92,12 +93,31 @@
       button {
         padding: 10px;
       }
+      .status {
+        flex-direction: column;
+        align-items: center;
+      }
+      .status div {
+        margin-bottom: 10px;
+      }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Belajar Matematika</h1>
+    
+    <!-- Pilihan Level -->
+    <div>
+      <label for="level">Pilih Level:</label>
+      <select id="level">
+        <option value="mudah">Mudah (Satuan)</option>
+        <option value="menengah">Menengah (Puluhan)</option>
+        <option value="sulit">Sulit (Ratusan)</option>
+      </select>
+    </div>
+    
+    <!-- Pilihan Operasi -->
     <div>
       <label for="operator">Pilih Operasi:</label>
       <select id="operator">
@@ -105,8 +125,8 @@
         <option value="kurang">Kurang (-)</option>
         <option value="kali">Kali (x)</option>
       </select>
-      <button onclick="generateQuestion()">Buat Soal</button>
     </div>
+    <button onclick="generateQuestion()">Buat Soal</button>
 
     <div id="question"></div>
 
@@ -116,18 +136,40 @@
     </div>
 
     <div id="feedback" class="feedback"></div>
-    <div class="score">Skor: <span id="score">0</span></div>
+    <div class="status">
+      <div>Skor: <span id="score">0</span></div>
+      <div>Health: <span id="health">3</span></div>
+    </div>
   </div>
 
   <script>
     let currentAnswer;
     let score = 0;
+    let health = 3;
+
+    function generateNumber(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
 
     function generateQuestion() {
+      const level = document.getElementById('level').value;
       const op = document.getElementById('operator').value;
-      // Menghasilkan angka acak antara 1 dan 10
-      const num1 = Math.floor(Math.random() * 10) + 1;
-      const num2 = Math.floor(Math.random() * 10) + 1;
+      let min, max;
+      
+      // Atur rentang angka berdasarkan level
+      if (level === "mudah") {
+        min = 1;
+        max = 9;
+      } else if (level === "menengah") {
+        min = 10;
+        max = 99;
+      } else if (level === "sulit") {
+        min = 100;
+        max = 999;
+      }
+
+      const num1 = generateNumber(min, max);
+      const num2 = generateNumber(min, max);
       let questionText = "";
 
       if (op === "tambah") {
@@ -147,6 +189,11 @@
       document.getElementById('answer').focus();
     }
 
+    function updateDisplays() {
+      document.getElementById('score').textContent = score;
+      document.getElementById('health').textContent = health;
+    }
+
     function checkAnswer() {
       const userAnswer = parseInt(document.getElementById('answer').value);
       const feedbackElem = document.getElementById('feedback');
@@ -155,12 +202,23 @@
         feedbackElem.textContent = "Benar!";
         feedbackElem.style.color = "#28a745";
         score++;
-        document.getElementById('score').textContent = score;
-        // Update soal otomatis setelah 1 detik jika jawaban benar
+        updateDisplays();
+        // Jika jawaban benar, generate soal baru otomatis setelah 1 detik
         setTimeout(generateQuestion, 1000);
       } else {
+        health--;
+        updateDisplays();
         feedbackElem.textContent = "Salah!";
         feedbackElem.style.color = "#dc3545";
+        // Jika health habis, reset skor dan health
+        if (health <= 0) {
+          feedbackElem.textContent += " Game Over! Skor direset.";
+          score = 0;
+          health = 3;
+          updateDisplays();
+          // Generate soal baru otomatis setelah 1 detik
+          setTimeout(generateQuestion, 1000);
+        }
       }
     }
   </script>
