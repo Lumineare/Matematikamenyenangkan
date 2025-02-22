@@ -147,6 +147,19 @@
     let score = 0;
     let health = 3;
 
+    // Fungsi untuk menyimpan data ke localStorage
+    function saveData() {
+      localStorage.setItem("score", score);
+      localStorage.setItem("health", health);
+    }
+
+    // Fungsi untuk memuat data dari localStorage
+    function loadData() {
+      score = parseInt(localStorage.getItem("score")) || 0;
+      health = parseInt(localStorage.getItem("health")) || 3;
+      updateDisplays();
+    }
+
     function generateNumber(min, max) {
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }
@@ -196,6 +209,8 @@
     function updateDisplays() {
       document.getElementById('score').textContent = score;
       document.getElementById('health').textContent = health;
+      // Simpan data setiap kali tampilan diupdate
+      saveData();
     }
 
     function checkAnswer() {
@@ -224,6 +239,9 @@
         }
       }
     }
+
+    // Muat data ketika halaman pertama kali di-load
+    loadData();
   </script>
 </body>
 </html>
