@@ -144,6 +144,7 @@
       document.getElementById('question').textContent = questionText;
       document.getElementById('feedback').textContent = "";
       document.getElementById('answer').value = "";
+      document.getElementById('answer').focus();
     }
 
     function checkAnswer() {
@@ -154,11 +155,13 @@
         feedbackElem.textContent = "Benar!";
         feedbackElem.style.color = "#28a745";
         score++;
+        document.getElementById('score').textContent = score;
+        // Update soal otomatis setelah 1 detik jika jawaban benar
+        setTimeout(generateQuestion, 1000);
       } else {
         feedbackElem.textContent = "Salah!";
         feedbackElem.style.color = "#dc3545";
       }
-      document.getElementById('score').textContent = score;
     }
   </script>
 </body>
