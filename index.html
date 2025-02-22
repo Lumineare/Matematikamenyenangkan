@@ -168,16 +168,20 @@
         max = 999;
       }
 
-      const num1 = generateNumber(min, max);
-      const num2 = generateNumber(min, max);
+      // Hasilkan dua angka acak
+      let num1 = generateNumber(min, max);
+      let num2 = generateNumber(min, max);
       let questionText = "";
 
       if (op === "tambah") {
         questionText = `${num1} + ${num2} = ?`;
         currentAnswer = num1 + num2;
       } else if (op === "kurang") {
-        questionText = `${num1} - ${num2} = ?`;
-        currentAnswer = num1 - num2;
+        // Pastikan soal pengurangan tidak menghasilkan angka negatif
+        const a = Math.max(num1, num2);
+        const b = Math.min(num1, num2);
+        questionText = `${a} - ${b} = ?`;
+        currentAnswer = a - b;
       } else if (op === "kali") {
         questionText = `${num1} x ${num2} = ?`;
         currentAnswer = num1 * num2;
@@ -216,7 +220,6 @@
           score = 0;
           health = 3;
           updateDisplays();
-          // Generate soal baru otomatis setelah 1 detik
           setTimeout(generateQuestion, 1000);
         }
       }
