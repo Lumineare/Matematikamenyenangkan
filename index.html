@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Belajar Matematika</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    h1 { color: #333; }
+    .feedback { font-weight: bold; margin-top: 10px; }
+    .score { margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Belajar Matematika</h1>
+  <div>
+    <label for="operator">Pilih Operasi:</label>
+    <select id="operator">
+      <option value="tambah">Tambah (+)</option>
+      <option value="kurang">Kurang (-)</option>
+      <option value="kali">Kali (x)</option>
+    </select>
+    <button onclick="generateQuestion()">Buat Soal</button>
+  </div>
+
+  <div id="question" style="margin-top:20px; font-size:18px;"></div>
+
+  <div style="margin-top:20px;">
+    <input type="number" id="answer" placeholder="Jawaban Anda" />
+    <button onclick="checkAnswer()">Submit</button>
+  </div>
+
+  <div id="feedback" class="feedback"></div>
+  <div class="score">Skor: <span id="score">0</span></div>
+
+  <script>
+    let currentAnswer;
+    let score = 0;
+
+    function generateQuestion() {
+      const op = document.getElementById('operator').value;
+      // Menghasilkan angka acak antara 1 dan 10
+      const num1 = Math.floor(Math.random() * 10) + 1;
+      const num2 = Math.floor(Math.random() * 10) + 1;
+      let questionText = "";
+      
+      if (op === "tambah") {
+        questionText = `${num1} + ${num2} = ?`;
+        currentAnswer = num1 + num2;
+      } else if (op === "kurang") {
+        questionText = `${num1} - ${num2} = ?`;
+        currentAnswer = num1 - num2;
+      } else if (op === "kali") {
+        questionText = `${num1} x ${num2} = ?`;
+        currentAnswer = num1 * num2;
+      }
+      
+      document.getElementById('question').textContent = questionText;
+      document.getElementById('feedback').textContent = "";
+      document.getElementById('answer').value = "";
+    }
+
+    function checkAnswer() {
+      const userAnswer = parseInt(document.getElementById('answer').value);
+      if (userAnswer === currentAnswer) {
+        document.getElementById('feedback').textContent = "Benar!";
+        score++;
+      } else {
+        document.getElementById('feedback').textContent = "Salah!";
+      }
+      document.getElementById('score').textContent = score;
+    }
+  </script>
+</body>
+</html>
